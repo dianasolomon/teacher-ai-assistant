@@ -1,0 +1,91 @@
+body {
+    min-height: 100vh;
+    position: relative;
+    padding-bottom: 60px;
+    
+}
+
+/* Hero section */
+.hero-section {
+    padding: 40px 0;
+}
+
+/* Cards */
+.card {
+    border-radius: 14px;
+    border: none;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+}
+
+/* Pastel colors */
+.card-blue {
+    background-color: #f2f7ff;
+    border-top: 6px solid #7ab6ff;
+}
+
+.card-green {
+    background-color: #f1fbf5;
+    border-top: 6px solid #7dd3a9;
+}
+
+.card-yellow {
+    background-color: #fff9e6;
+    border-top: 6px solid #ffd166;
+}
+
+/* Buttons */
+.btn-blue {
+    background-color: #7ab6ff;
+    color: white;
+}
+
+.btn-green {
+    background-color: #3fa97c;
+    color: white;
+}
+
+.btn-yellow {
+    background-color: #f4b400;
+    color: #333;
+}
+
+/* Footer bottom-left */
+.footer {
+    position: fixed;
+    bottom: 10px;
+    left: 15px;
+    font-size: 14px;
+    color: #555;
+}
+
+/* Page Backgrounds */
+.bg-page-blue {
+    background-color: #f2f7ff;
+}
+
+.bg-page-green {
+    background-color: #f1fbf5;
+}
+
+.bg-page-yellow {
+    background-color: #fff9e6;
+}
+
+/* Navbar Colors */
+.bg-navbar-blue {
+    background-color: #7ab6ff !important;
+}
+
+.bg-navbar-green {
+    background-color: #7dd3a9 !important;
+}
+
+.bg-navbar-yellow {
+    background-color: #ffd166 !important;
+}
