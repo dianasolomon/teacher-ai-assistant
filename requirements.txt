@@ -1,1 +1,6 @@
 flask
+werkzeug
+pypdf
+sentence-transformers
+faiss-cpu
+numpy
