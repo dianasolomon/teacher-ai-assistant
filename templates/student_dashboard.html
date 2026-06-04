@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Learning Dashboard</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f2f5;
+      min-height: 100vh;
+      padding-top: 72px;
+    }
+
+    /* ── NAV (matches index.html exactly) ── */
+    header {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      background: #fff;
+      padding: 16px 24px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      position: fixed;
+      top: 0; left: 0;
+      z-index: 1000;
+    }
+    .header-inner {
+      width: 100%;
+      max-width: 1100px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .brand {
+      font-weight: 800;
+      font-size: 1.15rem;
+      color: #2c3e50;
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+    .brand-icon {
+      background: linear-gradient(135deg, #2980b9 0%, #2c3e50 100%);
+      color: white;
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem;
+    }
+    .nav-right { display: flex; align-items: center; gap: 16px; }
+    .nav-user { font-size: 0.88rem; color: #555; }
+    .nav-user strong { color: #2c3e50; }
+    .btn-ask {
+      text-decoration: none;
+      padding: 8px 16px;
+      background: #27ae60;
+      color: white;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 0.82rem;
+      transition: opacity 0.2s;
+    }
+    .btn-logout {
+      text-decoration: none;
+      padding: 8px 16px;
+      background: #e74c3c;
+      color: white;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 0.82rem;
+      transition: opacity 0.2s;
+    }
+    .btn-ask:hover, .btn-logout:hover { opacity: 0.85; }
+
+    /* ── PAGE LAYOUT ── */
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 36px 20px 60px;
+    }
+    .page-header { margin-bottom: 32px; }
+    .page-header h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #1a1a1a;
+      margin-bottom: 6px;
+    }
+    .page-header p { color: #666; font-size: 0.95rem; }
+
+    /* ── SEARCH BAR ── */
+    .search-wrap {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 32px;
+    }
+    .search-wrap input {
+      flex: 1;
+      padding: 13px 18px;
+      border: 1.5px solid #dde1e7;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-family: 'Segoe UI', sans-serif;
+      color: #1a1a1a;
+      background: #fff;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .search-wrap input:focus {
+      border-color: #2980b9;
+      box-shadow: 0 0 0 3px rgba(41,128,185,0.1);
+    }
+    .search-wrap input::placeholder { color: #aaa; }
+    .btn-search {
+      padding: 13px 26px;
+      background: #2980b9;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      font-family: 'Segoe UI', sans-serif;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .btn-search:hover { opacity: 0.88; }
+
+    /* ── CARD (matches site style) ── */
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 28px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+      border-top: 5px solid;
+      margin-bottom: 24px;
+    }
+    .card.green  { border-color: #27ae60; }
+    .card.blue   { border-color: #2980b9; }
+    .card.yellow { border-color: #f1c40f; }
+    .card.red    { border-color: #e74c3c; }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .card-title {
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: #2c3e50;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+    .badge {
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 4px 11px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+    .badge-green  { background: #eafaf1; color: #27ae60; }
+    .badge-blue   { background: #eaf4fb; color: #2980b9; }
+    .badge-yellow { background: #fef9e7; color: #b7950b; }
+    .badge-red    { background: #fdedec; color: #e74c3c; }
+
+    /* ── FILTER TOGGLE ── */
+    .filter-toggle {
+      display: flex;
+      gap: 4px;
+      background: #f0f2f5;
+      border-radius: 8px;
+      padding: 3px;
+    }
+    .filter-btn {
+      background: transparent;
+      border: none;
+      color: #888;
+      font-size: 0.78rem;
+      font-weight: 600;
+      font-family: 'Segoe UI', sans-serif;
+      padding: 5px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.18s;
+    }
+    .filter-btn.active {
+      background: #fff;
+      color: #2c3e50;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    }
+
+    /* ── 2-COL GRID ── */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    @media (max-width: 800px) { .grid-2 { grid-template-columns: 1fr; } }
+
+    /* ── HEATMAP ── */
+    .heatmap-grid {
+      display: grid;
+      grid-template-columns: repeat(53, 13px);
+      grid-template-rows: repeat(7, 13px);
+      gap: 2px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+    .hm-cell {
+      width: 13px; height: 13px;
+      border-radius: 3px;
+      background: #eef0f3;
+      cursor: default;
+      transition: transform 0.1s;
+    }
+    .hm-cell:hover { transform: scale(1.35); z-index: 5; }
+    .hm-cell[data-level="1"] { background: #c3e6d0; }
+    .hm-cell[data-level="2"] { background: #6dbe96; }
+    .hm-cell[data-level="3"] { background: #3aa36b; }
+    .hm-cell[data-level="4"] { background: #27ae60; }
+    .heatmap-legend {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 10px;
+      justify-content: flex-end;
+    }
+    .heatmap-legend span { font-size: 0.7rem; color: #aaa; }
+    .leg-cell { width: 12px; height: 12px; border-radius: 2px; }
+
+    /* ── TIMELINE ── */
+    .timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-height: 300px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+    .timeline::-webkit-scrollbar { width: 4px; }
+    .timeline::-webkit-scrollbar-thumb { background: #ddd; border-radius: 4px; }
+    .tl-entry {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      padding: 10px 12px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      border-left: 3px solid #ddd;
+    }
+    .tl-entry.understood { border-left-color: #27ae60; }
+    .tl-entry.confused   { border-left-color: #e74c3c; }
+    .tl-entry.answered   { border-left-color: #2980b9; }
+    .tl-icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+    .tl-content { flex: 1; min-width: 0; }
+    .tl-question {
+      font-size: 0.82rem;
+      color: #333;
+      line-height: 1.4;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .tl-meta { font-size: 0.71rem; color: #888; margin-top: 3px; display: flex; gap: 8px; flex-wrap: wrap; }
+    .tl-chip {
+      font-size: 0.67rem;
+      font-weight: 700;
+      padding: 1px 7px;
+      border-radius: 10px;
+      text-transform: uppercase;
+    }
+    .chip-understood { background: #eafaf1; color: #27ae60; }
+    .chip-confused   { background: #fdedec; color: #e74c3c; }
+    .chip-answered   { background: #eaf4fb; color: #2980b9; }
+
+    /* ── BAR CHART (Mastery) ── */
+    .bar-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-height: 300px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+    .bar-list::-webkit-scrollbar { width: 4px; }
+    .bar-list::-webkit-scrollbar-thumb { background: #ddd; border-radius: 4px; }
+    .bar-row { display: flex; flex-direction: column; gap: 4px; }
+    .bar-label-row { display: flex; justify-content: space-between; align-items: baseline; }
+    .bar-label {
+      font-size: 0.8rem;
+      color: #333;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 72%;
+    }
+    .bar-pct { font-size: 0.78rem; font-weight: 700; }
+    .bar-track {
+      height: 9px;
+      background: #f0f2f5;
+      border-radius: 5px;
+      overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%;
+      border-radius: 5px;
+      transition: width 0.65s cubic-bezier(.4,0,.2,1);
+    }
+    .bar-high { background: #27ae60; }
+    .bar-mid  { background: #f1c40f; }
+    .bar-low  { background: #e74c3c; }
+
+    /* ── MISTAKE CARDS ── */
+    .mistake-list { display: flex; flex-direction: column; gap: 10px; }
+    .mistake-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: #f8f9fa;
+      border-radius: 10px;
+      padding: 14px 16px;
+      border: 1px solid #eee;
+    }
+    .mistake-count {
+      background: #fdedec;
+      color: #e74c3c;
+      font-size: 1rem;
+      font-weight: 800;
+      min-width: 42px;
+      text-align: center;
+      padding: 7px 8px;
+      border-radius: 8px;
+      flex-shrink: 0;
+    }
+    .mistake-info { flex: 1; min-width: 0; }
+    .mistake-concept { font-size: 0.85rem; font-weight: 700; color: #2c3e50; margin-bottom: 3px; }
+    .mistake-tag {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 600;
+      background: #eaf4fb;
+      color: #2980b9;
+      padding: 2px 9px;
+      border-radius: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .mistake-date { font-size: 0.71rem; color: #aaa; margin-top: 3px; }
+
+    /* ── SEARCH RESULTS ── */
+    .search-results-box {
+      background: #fff;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+      border-top: 5px solid #2980b9;
+      margin-bottom: 24px;
+      display: none;
+    }
+    .search-results-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+    .search-results-title {
+      font-size: 1rem;
+      font-weight: 800;
+      color: #2c3e50;
+    }
+    .btn-close-search {
+      background: none;
+      border: none;
+      font-size: 1.1rem;
+      color: #aaa;
+      cursor: pointer;
+      padding: 2px 6px;
+      border-radius: 4px;
+      transition: background 0.15s;
+    }
+    .btn-close-search:hover { background: #f0f2f5; color: #555; }
+    /* ── Search result cards ── */
+    .search-concept-card {
+      background: #fff;
+      border: 1.5px solid #e8ecf0;
+      border-radius: 12px;
+      padding: 20px 22px;
+      margin-bottom: 14px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.05);
+    }
+    .search-concept-card:last-child { margin-bottom: 0; }
+
+    .sc-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      gap: 12px;
+    }
+    .sc-title {
+      font-size: 1rem;
+      font-weight: 800;
+      color: #2c3e50;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .sc-title::before {
+      content: '';
+      display: inline-block;
+      width: 4px; height: 18px;
+      background: #2980b9;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+    .sc-mastery-ring {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+    .mastery-circle {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.72rem;
+      font-weight: 800;
+      border: 3px solid;
+      flex-shrink: 0;
+    }
+    .mc-high { border-color: #27ae60; color: #27ae60; background: #eafaf1; }
+    .mc-mid  { border-color: #e6ac00; color: #e6ac00; background: #fef9e7; }
+    .mc-low  { border-color: #e74c3c; color: #e74c3c; background: #fdedec; }
+    .mc-none { border-color: #ccc;    color: #aaa;    background: #f5f5f5; }
+
+    .sc-section-label {
+      font-size: 0.68rem;
+      font-weight: 800;
+      color: #aaa;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+      margin-bottom: 8px;
+      margin-top: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .sc-section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #eee;
+    }
+
+    .mini-badges { display: flex; gap: 6px; flex-wrap: wrap; }
+    .mini-badge {
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 4px 11px;
+      border-radius: 20px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .mb-high   { background: #eafaf1; color: #27ae60; }
+    .mb-mid    { background: #fef9e7; color: #b7950b; }
+    .mb-low    { background: #fdedec; color: #e74c3c; }
+    .mb-nodata { background: #f0f2f5; color: #888; }
+    .mb-mistake {
+      background: #fdf2f8;
+      color: #8e44ad;
+      border: 1px solid #e8d5f0;
+    }
+    .mb-score {
+      background: #eaf4fb;
+      color: #2980b9;
+      border: 1px solid #c5dff0;
+    }
+
+    .mini-tl { display: flex; flex-direction: column; gap: 6px; }
+    .mini-tl-item {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      padding: 8px 12px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      border-left: 3px solid #ddd;
+    }
+    .mini-tl-item.understood { border-left-color: #27ae60; }
+    .mini-tl-item.confused   { border-left-color: #e74c3c; }
+    .mini-tl-item.scored     { border-left-color: #2980b9; }
+    .mini-tl-item.answered   { border-left-color: #2980b9; }
+    .mini-tl-item:last-child { }
+    .mini-outcome {
+      font-size: 0.65rem;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 20px;
+      flex-shrink: 0;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      white-space: nowrap;
+    }
+    .mini-tl-q {
+      flex: 1;
+      font-size: 0.8rem;
+      color: #333;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .mini-tl-date {
+      flex-shrink: 0;
+      font-size: 0.68rem;
+      color: #bbb;
+      margin-left: 6px;
+    }
+    .no-data { font-size: 0.83rem; color: #bbb; font-style: italic; padding: 6px 0; }
+
+    /* ── EMPTY / LOADING ── */
+    .empty-state {
+      text-align: center;
+      color: #aaa;
+      font-size: 0.88rem;
+      padding: 32px 0;
+      line-height: 1.8;
+    }
+    .empty-icon { font-size: 2.2rem; display: block; margin-bottom: 8px; }
+    .loading {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #aaa;
+      font-size: 0.85rem;
+      padding: 24px 0;
+    }
+    .dot {
+      width: 8px; height: 8px;
+      background: #27ae60;
+      border-radius: 50%;
+      animation: blink 1s infinite alternate;
+    }
+    .dot:nth-child(2) { animation-delay: 0.2s; background: #2980b9; }
+    .dot:nth-child(3) { animation-delay: 0.4s; background: #f1c40f; }
+    @keyframes blink { from { opacity: 0.25; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+
+    /* Tooltip */
+    .tooltip {
+      position: fixed;
+      background: #2c3e50;
+      color: #fff;
+      border-radius: 6px;
+      padding: 5px 10px;
+      font-size: 0.72rem;
+      pointer-events: none;
+      z-index: 9999;
+      display: none;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV matches site exactly -->
+<header>
+  <div class="header-inner">
+    <a href="/" class="brand">
+      <div class="brand-icon">🎓</div>
+      Teacher AI Assistant
+    </a>
+    <div class="nav-right">
+      <span class="nav-user">Hello, <strong>{{ current_user.name or current_user.id }}</strong> (Student)</span>
+      <a href="/student_doubt" class="btn-ask">Ask a Doubt</a>
+      <a href="/logout" class="btn-logout">Logout</a>
+    </div>
+  </div>
+</header>
+
+<div class="page">
+
+  <div class="page-header">
+    <h1>My Learning Dashboard</h1>
+    <p>Track your activity, monitor concept mastery, and find areas to improve.</p>
+  </div>
+
+  <!-- Search -->
+  <div class="search-wrap">
+    <input type="text" id="search-input" placeholder="Search a concept… e.g. Decision Trees, Recursion, Photosynthesis"/>
+    <button class="btn-search" onclick="runSearch()">🔍 Search</button>
+  </div>
+
+  <!-- Search Results -->
+  <div class="search-results-box" id="search-results">
+    <div class="search-results-header">
+      <span class="search-results-title" id="search-title">Results</span>
+      <button class="btn-close-search" onclick="closeSearch()">✕</button>
+    </div>
+    <div id="search-body"></div>
+  </div>
+
+  <!-- Heatmap -->
+  <div class="card green">
+    <div class="card-header">
+      <span class="card-title">Activity Heatmap</span>
+      <span class="badge badge-green">Last 12 Months</span>
+    </div>
+    <div id="heatmap-wrap">
+      <div class="loading"><div class="dot"></div><div class="dot"></div><div class="dot"></div> Loading activity…</div>
+    </div>
+    <div class="heatmap-legend">
+      <span>Less</span>
+      <div class="leg-cell" style="background:#eef0f3;border:1px solid #dde1e7"></div>
+      <div class="leg-cell" style="background:#c3e6d0"></div>
+      <div class="leg-cell" style="background:#6dbe96"></div>
+      <div class="leg-cell" style="background:#3aa36b"></div>
+      <div class="leg-cell" style="background:#27ae60"></div>
+      <span>More</span>
+    </div>
+  </div>
+
+  <!-- Timeline + Mastery -->
+  <div class="grid-2">
+    <div class="card blue">
+      <div class="card-header">
+        <span class="card-title">Learning Timeline</span>
+        <span class="badge badge-blue">Recent 50</span>
+      </div>
+      <div id="timeline-wrap">
+        <div class="loading"><div class="dot"></div><div class="dot"></div><div class="dot"></div> Loading…</div>
+      </div>
+    </div>
+
+    <div class="card green">
+      <div class="card-header">
+        <span class="card-title">Concept Mastery</span>
+        <div class="filter-toggle">
+          <button class="filter-btn active" id="mb-recent" onclick="loadMastery('recent')">Last 7 Days</button>
+          <button class="filter-btn" id="mb-all" onclick="loadMastery('all')">All Time</button>
+        </div>
+      </div>
+      <div id="mastery-wrap">
+        <div class="loading"><div class="dot"></div><div class="dot"></div><div class="dot"></div> Loading…</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mistakes -->
+  <div class="card red">
+    <div class="card-header">
+      <span class="card-title">Areas for Improvement</span>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div class="filter-toggle">
+          <button class="filter-btn active" id="mk-recent" onclick="loadMistakes('recent')">This Week</button>
+          <button class="filter-btn" id="mk-all" onclick="loadMistakes('all')">All Time</button>
+        </div>
+        <span class="badge badge-red">Top Mistakes</span>
+      </div>
+    </div>
+    <div id="mistakes-wrap">
+      <div class="loading"><div class="dot"></div><div class="dot"></div><div class="dot"></div> Loading…</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="tooltip" id="tooltip"></div>
+
+<script>
+// ── Helpers ──
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function barClass(v) { return v >= 0.7 ? 'bar-high' : v >= 0.4 ? 'bar-mid' : 'bar-low'; }
+function barColor(v) { return v >= 0.7 ? '#27ae60' : v >= 0.4 ? '#e6ac00' : '#e74c3c'; }
+function masteryBadgeClass(v) {
+  if (v === null || v === undefined) return 'mb-nodata';
+  return v >= 0.7 ? 'mb-high' : v >= 0.4 ? 'mb-mid' : 'mb-low';
+}
+function masteryLabel(v) { return (v === null || v === undefined) ? 'No Data' : Math.round(v * 100) + '%'; }
+function outcomeChipClass(o) {
+  if (!o) return 'chip-answered';
+  if (o === 'understood') return 'chip-understood';
+  if (o === 'confused')   return 'chip-confused';
+  return 'chip-answered';
+}
+function outcomeIcon(o) {
+  if (!o) return '💬';
+  if (o === 'understood') return '✅';
+  if (o === 'confused')   return '❌';
+  return '💬';
+}
+// Format raw outcome strings like "SCORED_5_7" → "Score 5/7"
+// or "incomplete_answer" → "Incomplete Answer"
+function formatOutcome(o) {
+  if (!o) return 'Answered';
+  const up = o.toUpperCase();
+  // SCORED_X_Y format
+  const scoreMatch = up.match(/SCORED_(\d+)_(\d+)/);
+  if (scoreMatch) return `${scoreMatch[1]}/${scoreMatch[2]}`;
+  // Otherwise title-case the tag
+  return o.replace(/_/g, ' ').replace(/\w/g, c => c.toUpperCase());
+}
+// Decide border class for timeline item
+function tlItemClass(o) {
+  if (!o) return 'answered';
+  if (o === 'understood') return 'understood';
+  if (o === 'confused')   return 'confused';
+  if (o.toUpperCase().startsWith('SCORED')) return 'scored';
+  return 'answered';
+}
+// Outcome badge style
+function outcomeBadgeStyle(o) {
+  if (!o) return 'background:#eaf4fb;color:#2980b9;';
+  if (o === 'understood') return 'background:#eafaf1;color:#27ae60;';
+  if (o === 'confused')   return 'background:#fdedec;color:#e74c3c;';
+  if (o.toUpperCase().startsWith('SCORED')) return 'background:#eaf4fb;color:#2980b9;';
+  return 'background:#f0f2f5;color:#666;';
+}
+function loading() {
+  return '<div class="loading"><div class="dot"></div><div class="dot"></div><div class="dot"></div> Loading…</div>';
+}
+
+// ── Heatmap ──
+function buildHeatmap(heatData, timelineData) {
+  const tooltip = document.getElementById('tooltip');
+  const today = new Date();
+  const cells = [];
+  for (let i = 364; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(today.getDate() - i);
+    const key = d.toISOString().slice(0, 10);
+    cells.push({ date: key, count: heatData[key] || 0 });
+  }
+  const maxCount = Math.max(...cells.map(c => c.count), 1);
+  const firstDay = new Date(today);
+  firstDay.setDate(today.getDate() - 364);
+  const startDow = firstDay.getDay();
+
+  let html = '<div class="heatmap-grid">';
+  for (let i = 0; i < startDow; i++) html += `<div class="hm-cell" style="visibility:hidden"></div>`;
+  cells.forEach(cell => {
+    let level = 0;
+    if (cell.count > 0) {
+      const r = cell.count / maxCount;
+      level = r < 0.25 ? 1 : r < 0.5 ? 2 : r < 0.75 ? 3 : 4;
+    }
+    html += `<div class="hm-cell" data-level="${level}" data-count="${cell.count}" data-date="${cell.date}"></div>`;
+  });
+  html += '</div>';
+  document.getElementById('heatmap-wrap').innerHTML = html;
+
+  document.querySelectorAll('.hm-cell[data-date]').forEach(cell => {
+    cell.addEventListener('mousemove', e => {
+      tooltip.style.display = 'block';
+      tooltip.style.left = (e.clientX + 14) + 'px';
+      tooltip.style.top = (e.clientY - 30) + 'px';
+      tooltip.textContent = `${cell.dataset.date}: ${cell.dataset.count} interaction${cell.dataset.count != 1 ? 's' : ''}`;
+    });
+    cell.addEventListener('mouseleave', () => { tooltip.style.display = 'none'; });
+  });
+
+  // Timeline
+  const tw = document.getElementById('timeline-wrap');
+  if (!timelineData || timelineData.length === 0) {
+    tw.innerHTML = '<div class="empty-state"><span class="empty-icon">📭</span>No activity yet.<br>Start asking doubts or submitting assignments!</div>';
+    return;
+  }
+  let thtml = '<div class="timeline">';
+  timelineData.forEach(item => {
+    const cls = item.outcome || 'answered';
+    const chipCls = outcomeChipClass(item.outcome);
+    thtml += `
+      <div class="tl-entry ${cls}">
+        <span class="tl-icon">${outcomeIcon(item.outcome)}</span>
+        <div class="tl-content">
+          <div class="tl-question">${esc(item.question)}</div>
+          <div class="tl-meta">
+            <span class="tl-chip ${chipCls}">${esc(item.outcome)}</span>
+            <span>${esc(item.subject)}</span>
+            <span>${item.date}</span>
+          </div>
+        </div>
+      </div>`;
+  });
+  thtml += '</div>';
+  tw.innerHTML = thtml;
+}
+
+// ── Mastery ──
+function loadMastery(filter) {
+  ['recent','all'].forEach(f => document.getElementById(`mb-${f}`).classList.toggle('active', f === filter));
+  const w = document.getElementById('mastery-wrap');
+  w.innerHTML = loading();
+  fetch(`/api/dashboard/concept_mastery?filter=${filter}`, {credentials: "include"})
+    .then(r => r.json())
+    .then(data => {
+      if (!data.concepts || data.concepts.length === 0) {
+        w.innerHTML = '<div class="empty-state"><span class="empty-icon">📊</span>No mastery data for this period.<br>Interact with the AI to build your profile!</div>';
+        return;
+      }
+      let html = '<div class="bar-list">';
+      data.concepts.forEach(c => {
+        const pct = Math.round(c.mastery * 100);
+        const cls = barClass(c.mastery);
+        const color = barColor(c.mastery);
+        html += `
+          <div class="bar-row">
+            <div class="bar-label-row">
+              <span class="bar-label" title="${esc(c.label)}">${esc(c.label)}</span>
+              <span class="bar-pct" style="color:${color}">${pct}%</span>
+            </div>
+            <div class="bar-track">
+              <div class="bar-fill ${cls}" style="width:${pct}%"></div>
+            </div>
+          </div>`;
+      });
+      html += '</div>';
+      w.innerHTML = html;
+    })
+    .catch(() => { w.innerHTML = '<div class="empty-state">Failed to load mastery data.</div>'; });
+}
+
+// ── Mistakes ──
+function loadMistakes(filter) {
+  ['recent','all'].forEach(f => document.getElementById(`mk-${f}`).classList.toggle('active', f === filter));
+  const w = document.getElementById('mistakes-wrap');
+  w.innerHTML = loading();
+  fetch(`/api/dashboard/mistake_patterns?filter=${filter}`, {credentials: "include"})
+    .then(r => r.json())
+    .then(data => {
+      if (!data.mistakes || data.mistakes.length === 0) {
+        w.innerHTML = `<div class="empty-state"><span class="empty-icon">🎉</span>No mistakes recorded ${filter === 'recent' ? 'this week' : 'yet'}.<br>Keep it up!</div>`;
+        return;
+      }
+      let html = '<div class="mistake-list">';
+      data.mistakes.forEach(m => {
+        html += `
+          <div class="mistake-item">
+            <div class="mistake-count">${m.count}×</div>
+            <div class="mistake-info">
+              <div class="mistake-concept">${esc(m.label)}</div>
+              <span class="mistake-tag">${esc(m.mistake_tag.replace(/_/g,' '))}</span>
+              <div class="mistake-date">Last seen: ${m.last_seen} · ${esc(m.subject)}</div>
+            </div>
+          </div>`;
+      });
+      html += '</div>';
+      w.innerHTML = html;
+    })
+    .catch(() => { w.innerHTML = '<div class="empty-state">Failed to load mistake data.</div>'; });
+}
+
+// ── Search ──
+function runSearch() {
+  const q = document.getElementById('search-input').value.trim();
+  if (!q) return;
+  const box = document.getElementById('search-results');
+  const body = document.getElementById('search-body');
+  document.getElementById('search-title').textContent = `Results for "${q}"`;
+  body.innerHTML = loading();
+  box.style.display = 'block';
+  box.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  fetch(`/api/dashboard/concept_search?q=${encodeURIComponent(q)}`, {credentials: "include"})
+    .then(r => r.json())
+    .then(data => {
+      if (!data.results || data.results.length === 0) {
+        body.innerHTML = `<div class="empty-state"><span class="empty-icon">🔍</span>${data.message || 'No concepts found.'}</div>`;
+        return;
+      }
+      let html = '';
+      data.results.forEach(c => {
+        // Mastery circle
+        const pct = c.mastery !== null && c.mastery !== undefined ? Math.round(c.mastery * 100) : null;
+        const mcClass = pct === null ? 'mc-none' : pct >= 70 ? 'mc-high' : pct >= 40 ? 'mc-mid' : 'mc-low';
+        const pctLabel = pct === null ? 'N/A' : pct + '%';
+
+        // Mistakes
+        const mistakesHtml = c.mistakes.length === 0
+          ? '<span class="no-data">✓ No mistakes recorded for this concept</span>'
+          : c.mistakes.map(m => `
+              <span class="mini-badge mb-mistake">
+                ⚠️ ${esc(m.tag.replace(/_/g,' ').replace(/\w/g, x => x.toUpperCase()))}
+                <strong style="margin-left:3px;opacity:0.7">×${m.count}</strong>
+              </span>`).join('');
+
+        // Interaction timeline
+        let tlHtml = c.interactions.length === 0
+          ? '<div class="no-data">No interactions recorded yet for this concept.</div>'
+          : c.interactions.slice(0, 8).map(i => {
+              const cls = tlItemClass(i.outcome);
+              const label = formatOutcome(i.outcome);
+              const style = outcomeBadgeStyle(i.outcome);
+              return `<div class="mini-tl-item ${cls}">
+                <span class="mini-outcome" style="${style}">${esc(label)}</span>
+                <span class="mini-tl-q">${esc(i.question)}</span>
+                <span class="mini-tl-date">${i.date}</span>
+              </div>`;
+            }).join('');
+
+        html += `
+          <div class="search-concept-card">
+            <div class="sc-header">
+              <div class="sc-title">${esc(c.label)}</div>
+              <div class="sc-mastery-ring">
+                <div>
+                  <div style="font-size:0.65rem;color:#aaa;text-align:center;margin-bottom:2px;">MASTERY</div>
+                  <div class="mastery-circle ${mcClass}">${pctLabel}</div>
+                </div>
+              </div>
+            </div>
+
+            ${c.mastery_updated ? `<div style="font-size:0.72rem;color:#aaa;margin-bottom:10px;">Last updated: ${c.mastery_updated}</div>` : ''}
+
+            <div class="sc-section-label">⚠️ Mistake Patterns</div>
+            <div class="mini-badges">${mistakesHtml}</div>
+
+            <div class="sc-section-label">📋 Interaction History</div>
+            <div class="mini-tl">${tlHtml}</div>
+          </div>`;
+      });
+      body.innerHTML = html;
+    })
+    .catch(() => { body.innerHTML = '<div class="empty-state">Search failed. Please try again.</div>'; });
+}
+
+function closeSearch() {
+  document.getElementById('search-results').style.display = 'none';
+  document.getElementById('search-input').value = '';
+}
+
+document.getElementById('search-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') runSearch();
+});
+
+// ── Init ──
+fetch('/api/dashboard/activity_heatmap', {credentials: "include"})
+  .then(r => r.json())
+  .then(data => buildHeatmap(data.heatmap || {}, data.timeline || []))
+  .catch(() => {
+    document.getElementById('heatmap-wrap').innerHTML = '<div class="empty-state">Failed to load activity.</div>';
+    document.getElementById('timeline-wrap').innerHTML = '<div class="empty-state">Failed to load timeline.</div>';
+  });
+
+loadMastery('recent');
+loadMistakes('recent');
+</script>
+
+<!-- ── FLOATING CHATBOT ── -->
+<style>
+  .chat-fab {
+    position: fixed;
+    bottom: 28px; right: 28px;
+    width: 56px; height: 56px;
+    background: #27ae60;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(39,174,96,0.35);
+    z-index: 2000;
+    border: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .chat-fab:hover { transform: scale(1.08); box-shadow: 0 6px 20px rgba(39,174,96,0.45); }
+
+  .chat-window {
+    position: fixed;
+    bottom: 96px; right: 28px;
+    width: 360px;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.13);
+    display: none;
+    flex-direction: column;
+    z-index: 2000;
+    overflow: hidden;
+    border: 1px solid #e8ecf0;
+  }
+  .chat-window.open { display: flex; }
+
+  .chat-header {
+    background: #27ae60;
+    color: #fff;
+    padding: 14px 18px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .chat-header-title { font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; }
+  .chat-header-sub { font-size: 0.72rem; opacity: 0.85; margin-top: 2px; }
+  .btn-chat-close { background: none; border: none; color: #fff; font-size: 1.1rem; cursor: pointer; padding: 2px 6px; border-radius: 4px; }
+  .btn-chat-close:hover { background: rgba(255,255,255,0.2); }
+
+  .chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 320px;
+    background: #f8f9fa;
+  }
+  .chat-messages::-webkit-scrollbar { width: 4px; }
+  .chat-messages::-webkit-scrollbar-thumb { background: #ddd; border-radius: 4px; }
+
+  .msg { display: flex; gap: 8px; align-items: flex-end; }
+  .msg.user { flex-direction: row-reverse; }
+  .msg-bubble {
+    max-width: 80%;
+    padding: 9px 13px;
+    border-radius: 14px;
+    font-size: 0.83rem;
+    line-height: 1.5;
+    color: #1a1a1a;
+    background: #fff;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+  }
+  .msg.user .msg-bubble { background: #27ae60; color: #fff; }
+  .msg-avatar {
+    width: 28px; height: 28px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.85rem; flex-shrink: 0;
+    background: #eafaf1;
+  }
+  .msg.user .msg-avatar { background: #d5f5e3; }
+
+  .chat-typing {
+    display: none;
+    padding: 4px 0;
+  }
+  .typing-dot {
+    display: inline-block; width: 6px; height: 6px;
+    background: #27ae60; border-radius: 50; margin: 0 2px;
+    animation: blink 1s infinite alternate;
+  }
+  .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+  .chat-input-row {
+    display: flex;
+    gap: 8px;
+    padding: 12px 14px;
+    background: #fff;
+    border-top: 1px solid #eee;
+  }
+  .chat-input {
+    flex: 1;
+    border: 1.5px solid #dde1e7;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 0.85rem;
+    font-family: 'Segoe UI', sans-serif;
+    outline: none;
+    transition: border-color 0.2s;
+    resize: none;
+  }
+  .chat-input:focus { border-color: #27ae60; }
+  .btn-chat-send {
+    background: #27ae60;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    flex-shrink: 0;
+  }
+  .btn-chat-send:hover { opacity: 0.88; }
+  .btn-chat-send:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .chat-quick-btns {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    padding: 8px 14px 0;
+    background: #fff;
+  }
+  .quick-btn {
+    font-size: 0.72rem; font-weight: 600;
+    background: #eafaf1; color: #27ae60;
+    border: 1px solid #c3e6d0;
+    border-radius: 20px;
+    padding: 4px 10px;
+    cursor: pointer;
+    transition: background 0.15s;
+    font-family: 'Segoe UI', sans-serif;
+  }
+  .quick-btn:hover { background: #d5f5e3; }
+</style>
+
+<!-- FAB button -->
+<button class="chat-fab" onclick="toggleChat()" title="Ask your learning assistant">💬</button>
+
+<!-- Chat window -->
+<div class="chat-window" id="chatWindow">
+  <div class="chat-header">
+    <div>
+      <div class="chat-header-title">🤖 Learning Assistant</div>
+      <div class="chat-header-sub">Ask about assignments, mastery, mistakes…</div>
+    </div>
+    <button class="btn-chat-close" onclick="toggleChat()">✕</button>
+  </div>
+
+  <div class="chat-quick-btns" id="quickBtns">
+    <button class="quick-btn" onclick="sendQuick('Do I have any pending assignments?')">📋 Pending assignments?</button>
+    <button class="quick-btn" onclick="sendQuick('What are my weakest topics?')">📉 Weakest topics?</button>
+    <button class="quick-btn" onclick="sendQuick('What mistakes do I keep making?')">⚠️ My mistakes?</button>
+    <button class="quick-btn" onclick="sendQuick('What should I study today?')">📚 What to study?</button>
+  </div>
+
+  <div class="chat-messages" id="chatMessages">
+    <div class="msg bot">
+      <div class="msg-avatar">🤖</div>
+      <div class="msg-bubble">Hi! I'm your learning assistant. I can tell you about your pending assignments, weak topics, and mistakes. What would you like to know?</div>
+    </div>
+  </div>
+
+  <div class="chat-typing" id="chatTyping">
+    <div class="msg bot">
+      <div class="msg-avatar">🤖</div>
+      <div class="msg-bubble" style="background:#eafaf1;">
+        <span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="chat-input-row">
+    <textarea class="chat-input" id="chatInput" rows="1" placeholder="Ask anything…"></textarea>
+    <button class="btn-chat-send" id="chatSendBtn" onclick="sendChat()">➤</button>
+  </div>
+</div>
+
+<script>
+  function toggleChat() {
+    const w = document.getElementById('chatWindow');
+    w.classList.toggle('open');
+    if (w.classList.contains('open')) {
+      document.getElementById('chatInput').focus();
+    }
+  }
+
+  function appendMsg(text, role) {
+    const container = document.getElementById('chatMessages');
+    const div = document.createElement('div');
+    div.className = `msg ${role}`;
+    div.innerHTML = `
+      <div class="msg-avatar">${role === 'user' ? '👤' : '🤖'}</div>
+      <div class="msg-bubble">${esc(text)}</div>`;
+    container.appendChild(div);
+    container.scrollTop = container.scrollHeight;
+  }
+
+  async function sendChat() {
+    const input = document.getElementById('chatInput');
+    const msg = input.value.trim();
+    if (!msg) return;
+
+    input.value = '';
+    input.style.height = 'auto';
+    document.getElementById('chatSendBtn').disabled = true;
+    document.getElementById('quickBtns').style.display = 'none';
+    appendMsg(msg, 'user');
+
+    const typing = document.getElementById('chatTyping');
+    typing.style.display = 'block';
+    document.getElementById('chatMessages').scrollTop = 99999;
+
+    try {
+      const res = await fetch('/api/dashboard/chat', {
+        method: 'POST',
+        credentials: "include",
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: msg })
+      });
+      const data = await res.json();
+      typing.style.display = 'none';
+      appendMsg(data.reply || 'Sorry, something went wrong.', 'bot');
+    } catch (err) {
+      typing.style.display = 'none';
+      appendMsg('Could not connect. Please try again.', 'bot');
+    }
+
+    document.getElementById('chatSendBtn').disabled = false;
+  }
+
+  function sendQuick(msg) {
+    document.getElementById('chatInput').value = msg;
+    sendChat();
+  }
+
+  document.getElementById('chatInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendChat();
+    }
+  });
+</script>
+
+</body>
+</html>
