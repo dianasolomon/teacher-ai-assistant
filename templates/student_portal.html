@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Portal | Teacher AI Assistant</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #e8f1ff 0%, #e6f2ff 50%, #f0f6ff 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 100px 20px 60px 20px;
+    }
+    header {
+      width: 100%;
+      background: #ffffff;
+      padding: 16px 24px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1000;
+      display: flex;
+      justify-content: center;
+    }
+    .header-content {
+      width: 100%;
+      max-width: 1100px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .brand {
+      font-weight: 800;
+      font-size: 1.15rem;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+    .brand-icon {
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      color: white;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+    }
+    .nav-actions { display: flex; align-items: center; gap: 16px; }
+    .btn-logout {
+      text-decoration: none;
+      padding: 8px 16px;
+      background: #ef4444;
+      color: white;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      transition: background 0.2s;
+    }
+    .btn-logout:hover { background: #dc2626; }
+    
+    h1 { font-size: 2.2rem; font-weight: 800; color: #0f172a; margin-bottom: 10px; text-align: center; }
+    .subtitle { color: #475569; font-size: 1rem; text-align: center; margin-bottom: 50px; }
+    
+    .cards {
+      display: flex;
+      gap: 32px;
+      flex-wrap: wrap;
+      justify-content: center;
+      max-width: 1100px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 40px 32px;
+      width: 320px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.1);
+      border-top: 6px solid #2563eb;
+      transition: all 0.3s ease;
+    }
+    .card:hover { transform: translateY(-8px); box-shadow: 0 8px 24px rgba(37, 99, 235, 0.15); }
+    .icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      background: #eff6ff;
+      color: #2563eb;
+    }
+    .card h2 { font-size: 1.2rem; font-weight: 700; color: #0f172a; text-align: center; }
+    .card p { font-size: 0.9rem; color: #475569; text-align: center; line-height: 1.6; flex-grow: 1; }
+    .btn {
+      width: 100%;
+      padding: 14px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      color: #fff;
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      transition: all 0.3s ease;
+      text-decoration: none;
+      text-align: center;
+    }
+    .btn:hover { box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25); }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-content">
+      <a href="/" class="brand"><span class="brand-icon">🎓</span>Teacher AI Assistant</a>
+      <div class="nav-actions">
+        <span style="font-size: 0.9rem; color: #475569; font-weight: 500;">Hello, <strong style="color: #0f172a;">{{ current_user.name or current_user.id }}</strong> (Student)</span>
+        <a href="/logout" class="btn-logout">Logout</a>
+      </div>
+    </div>
+  </header>
+
+  <h1>Student Portal</h1>
+  <p class="subtitle">Access your learning tools, ask questions, and submit assignments securely.</p>
+  
+  <div class="cards">
+    <div class="card">
+      <div class="icon">❓</div>
+      <h2>Ask a Doubt</h2>
+      <p>Get instant answers to your questions from the AI assistant powered by your teacher's syllabus and notes.</p>
+      <a href="/student_doubt" class="btn">ENTER PORTAL →</a>
+    </div>
+    <div class="card">
+      <div class="icon">📄</div>
+      <h2>Submit Assignment</h2>
+      <p>Upload your completed assignments and receive instant evaluation and feedback based on the class rubric.</p>
+      <a href="/assignment_answer_upload" class="btn">UPLOAD ASSIGNMENT →</a>
+    </div>
+    <div class="card" style="opacity: 0.7;">
+      <div class="icon" style="background: #f1f5f9; color: #64748b;">🚀</div>
+      <h2>Student Dashboard</h2>
+      <p>View your learning progress, mastery of concepts, and performance history over time.</p>
+      <a href="#" class="btn" style="background: #94a3b8; pointer-events: none;">COMING SOON</a>
+    </div>
+  </div>
+</body>
+</html>

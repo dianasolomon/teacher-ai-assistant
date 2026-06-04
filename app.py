@@ -112,10 +112,24 @@ def home():
 def login_page():
     if current_user.is_authenticated:
         if current_user.role == "teacher":
-            return redirect(url_for("teacher_dashboard"))
+            return redirect(url_for("teacher_portal"))
         else:
-            return redirect(url_for("student_doubt"))
+            return redirect(url_for("student_portal"))
     return render_template("login.html")
+
+@app.route("/student_portal")
+@login_required
+def student_portal():
+    if current_user.role != "student":
+        return redirect(url_for("home"))
+    return render_template("student_portal.html")
+
+@app.route("/teacher_portal")
+@login_required
+def teacher_portal():
+    if current_user.role != "teacher":
+        return redirect(url_for("home"))
+    return render_template("teacher_portal.html")
 
 @app.route("/student_doubt")
 @login_required
@@ -273,7 +287,7 @@ def login():
         login_user(user) # Saves active session in client cookie
         
         # Guide frontend where to redirect based on role
-        redirect_url = "/teacher_dashboard" if user.role == "teacher" else "/student_doubt"
+        redirect_url = "/teacher_portal" if user.role == "teacher" else "/student_portal"
         return jsonify({"message": "Login successful", "role": user.role, "redirect": redirect_url}), 200
     finally:
         session.close()

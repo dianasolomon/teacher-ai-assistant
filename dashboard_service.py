@@ -195,7 +195,7 @@ def search_concepts_by_subject(subject: str, search_query: str) -> List[Dict[str
         results = (
             session.query(ConceptCatalog)
             .filter(
-                ConceptCatalog.subject == subject,
+                func.lower(ConceptCatalog.subject) == func.lower(subject),
                 ConceptCatalog.label.like(f"%{search_query}%")
             )
             .limit(10)
@@ -214,8 +214,8 @@ def get_concept_drilldown(subject: str, concept_id: int) -> Dict[str, Any]:
     """
     session = get_session()
     try:
-        # Get concept label
-        concept = session.query(ConceptCatalog).filter_by(concept_id=concept_id, subject=subject).first()
+        # Get concept label (concept_id is PK, no need to strictly filter by subject casing)
+        concept = session.query(ConceptCatalog).filter_by(concept_id=concept_id).first()
         if not concept:
             return {"error": "Concept not found"}
 

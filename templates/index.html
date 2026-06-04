@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI Dashboard</title>
+  <title>Teacher AI Assistant | Empowering Education</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     * {
       box-sizing: border-box;
@@ -13,210 +15,273 @@
     }
 
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #e8f1ff 0%, #e6f2ff 50%, #f0f6ff 100%);
+      font-family: 'Inter', sans-serif;
+      background: #f8fafc;
+      color: #0f172a;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 140px 20px 60px 20px;
     }
 
-    h1 {
-      font-size: 2.2rem;
+    /* Navigation Header */
+    header {
+      width: 100%;
+      background: #ffffff;
+      padding: 20px 40px;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand {
       font-weight: 800;
-      color: #2c3e50;
-      margin-bottom: 10px;
-      text-align: center;
-    }
-
-    .subtitle {
-      color: #5a6c7d;
-      font-size: 1rem;
-      text-align: center;
-      margin-bottom: 56px;
-    }
-
-    .cards {
+      font-size: 1.5rem;
+      color: #0f172a;
       display: flex;
-      gap: 32px;
-      flex-wrap: wrap;
-      justify-content: center;
-      max-width: 1100px;
-    }
-
-    .card {
-      background: #fff;
-      border-radius: 16px;
-      padding: 40px 32px;
-      width: 300px;
-      display: flex;
-      flex-direction: column;
       align-items: center;
-      gap: 18px;
-      box-shadow: 0 6px 20px rgba(41, 128, 185, 0.15);
-      border-top: 6px solid;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .brand-icon {
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .btn-login {
+      text-decoration: none;
+      padding: 10px 24px;
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      color: white;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
       transition: all 0.3s ease;
     }
 
-    .card:hover {
+    .btn-login:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
+    }
+
+    .btn-outline {
+      text-decoration: none;
+      padding: 10px 24px;
+      background: transparent;
+      color: #2563eb;
+      border: 2px solid #2563eb;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+    }
+
+    .btn-outline:hover {
+      background: #eff6ff;
+    }
+
+    /* Hero Section */
+    .hero {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 80px 20px;
+      background: linear-gradient(135deg, #eff6ff 0%, #e0e7ff 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-content {
+      max-width: 800px;
+      z-index: 1;
+    }
+
+    .hero h1 {
+      font-size: 3.5rem;
+      font-weight: 800;
+      color: #0f172a;
+      margin-bottom: 24px;
+      line-height: 1.2;
+      letter-spacing: -1px;
+    }
+
+    .hero h1 span {
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      font-size: 1.25rem;
+      color: #475569;
+      margin-bottom: 40px;
+      line-height: 1.6;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+    }
+
+    /* Features Section */
+    .features {
+      padding: 80px 20px;
+      background: #ffffff;
+    }
+
+    .features-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: #0f172a;
+      margin-bottom: 60px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 32px;
+    }
+
+    .feature-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 40px 32px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .feature-card:hover {
       transform: translateY(-8px);
-      box-shadow: 0 8px 24px rgba(41, 128, 185, 0.18);
+      box-shadow: 0 12px 24px rgba(0,0,0,0.06);
+      border-color: #bfdbfe;
     }
 
-    .card.green {
-      border-color: #1976d2;
-      background: linear-gradient(135deg, #ffffff 0%, #e3f2fd 100%);
-    }
-
-    .card.yellow {
-      border-color: #1976d2;
-      background: linear-gradient(135deg, #ffffff 0%, #e3f2fd 100%);
-    }
-
-    .card.blue {
-      border-color: #2980b9;
-      background: linear-gradient(135deg, #ffffff 0%, #e3f2fd 100%);
-    }
-
-    .icon {
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
+    .feature-icon {
+      width: 64px;
+      height: 64px;
+      background: #eff6ff;
+      color: #2563eb;
+      border-radius: 16px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.6rem;
-      background: linear-gradient(135deg, #2980b9 0%, #1976d2 100%);
+      font-size: 2rem;
+      margin: 0 auto 24px auto;
     }
 
-    .icon.green {
-      background: linear-gradient(135deg, #2980b9 0%, #1976d2 100%);
-    }
-
-    .icon.yellow {
-      background: linear-gradient(135deg, #2980b9 0%, #1976d2 100%);
-    }
-
-    .icon.blue {
-      background: linear-gradient(135deg, #2980b9 0%, #1976d2 100%);
-    }
-
-    .card h2 {
-      font-size: 1.15rem;
+    .feature-card h3 {
+      font-size: 1.25rem;
       font-weight: 700;
-      color: #2c3e50;
+      color: #0f172a;
+      margin-bottom: 16px;
+    }
+
+    .feature-card p {
+      font-size: 0.95rem;
+      color: #475569;
+      line-height: 1.6;
+    }
+
+    /* Footer */
+    footer {
+      background: #0f172a;
+      color: #94a3b8;
       text-align: center;
+      padding: 40px 20px;
+      margin-top: auto;
     }
 
-    .card p {
-      font-size: 0.88rem;
-      color: #5a6c7d;
-      text-align: center;
-      line-height: 1.5;
-    }
-
-    .btn {
-      width: 100%;
-      padding: 14px 20px;
-      border: none;
-      border-radius: 8px;
-      font-size: 0.85rem;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-      cursor: pointer;
-      color: #fff;
-      margin-top: 12px;
-      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-      text-decoration: none;
-      display: block;
-      text-align: center;
-    }
-
-    .btn.green {
-      background: linear-gradient(135deg, #2980b9 0%, #2471a3 100%);
-    }
-
-    .btn.yellow {
-      background: linear-gradient(135deg, #2980b9 0%, #2471a3 100%);
-      color: #fff;
-    }
-
-    .btn.blue {
-      background: linear-gradient(135deg, #2980b9 0%, #2471a3 100%);
-    }
-
-    .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(41, 128, 185, 0.25);
-    }
   </style>
 </head>
-
 <body>
-  <!-- Navigation Header Bar -->
-  <header
-    style="width: 100%; display: flex; justify-content: center; background: #fff; padding: 16px 24px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 40px; position: fixed; top: 0; left: 0; z-index: 1000;">
-    <div style="width: 100%; max-width: 1100px; display: flex; justify-content: space-between; align-items: center;">
-      <span
-        style="font-weight: 800; font-size: 1.15rem; color: #2c3e50; letter-spacing: -0.5px; display: flex; align-items: center; gap: 8px;">
-        <span
-          style="background: linear-gradient(135deg, #2980b9 0%, #2c3e50 100%); color: white; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1rem;">🎓</span>
-        Teacher AI Assistant
-      </span>
-      <div style="display: flex; align-items: center; gap: 16px;">
-        {% if current_user.is_authenticated %}
-        <span style="font-size: 0.88rem; color: #555;">Hello, <strong style="color: #2c3e50;">{{ current_user.name or
-            current_user.id }}</strong> ({{ current_user.role | capitalize }})</span>
-        <a href="/logout"
-          style="text-decoration: none; padding: 8px 16px; background: #e74c3c; color: white; border-radius: 6px; font-weight: 700; font-size: 0.82rem; transition: opacity 0.2s;">Logout</a>
+
+  <header>
+    <a href="/" class="brand">
+      <span class="brand-icon">🎓</span>
+      Teacher AI Assistant
+    </a>
+    <div class="nav-actions">
+      {% if current_user.is_authenticated %}
+        <span style="font-weight: 500; margin-right: 12px;">Welcome, {{ current_user.name or current_user.id }}</span>
+        {% if current_user.role == 'teacher' %}
+          <a href="/teacher_portal" class="btn-login">Go to Portal</a>
         {% else %}
-        <a href="/login_page"
-          style="text-decoration: none; padding: 8px 18px; background: linear-gradient(135deg, #2980b9 0%, #2471a3 100%); color: white; border-radius: 8px; font-weight: 700; font-size: 0.85rem; box-shadow: 0 4px 10px rgba(41, 128, 185, 0.15); transition: opacity 0.2s;">Login
-          / Sign Up</a>
+          <a href="/student_portal" class="btn-login">Go to Portal</a>
         {% endif %}
-      </div>
+        <a href="/logout" class="btn-outline" style="border-color: #ef4444; color: #ef4444;">Logout</a>
+      {% else %}
+        <a href="/login_page" class="btn-login">Login / Sign Up</a>
+      {% endif %}
     </div>
   </header>
 
-  <h1>Welcome to your AI Dashboard</h1>
-  <p class="subtitle">Select a portal below to get started analyzing documents, uploading assignments, or managing
-    student doubts.</p>
-  <div class="cards">
-    <div class="card green">
-      <div class="icon green">❓</div>
-      <h2>Student Doubt Portal</h2>
-      <p>A dedicated space where students can ask questions and clarify their doubts securely.</p>
-      <a href="/student_doubt" class="btn green">ENTER PORTAL →</a>
+  <section class="hero">
+    <div class="hero-content">
+      <h1>The Next Generation of <span>AI-Powered Education</span></h1>
+      <p>Empower educators with intelligent analytics and automated evaluations. Provide students with instant, personalized doubt resolution and learning paths.</p>
+      <div class="hero-buttons">
+        {% if not current_user.is_authenticated %}
+          <a href="/login_page" class="btn-login" style="padding: 14px 32px; font-size: 1.1rem;">Get Started Now</a>
+        {% endif %}
+      </div>
     </div>
-    <div class="card yellow">
-      <div class="icon yellow">📄</div>
-      <h2>Assignment Upload</h2>
-      <p>Students can easily upload their completed assignments and track submission statuses.</p>
-      <a href="/assignment_answer_upload" class="btn yellow">ENTER PORTAL →</a>
-    </div>
-    <div class="card yellow">
-      <div class="icon yellow">📄</div>
-      <h2>Publish Assignment</h2>
-      <p>Teachers upload assignment and rubric.</p>
-      <a href="/assignment_ques_rubrics_upload" class="btn yellow">ENTER →</a>
-    </div>
-    <div class="card blue">
-      <div class="icon blue">📋</div>
-      <h2>Teacher Notes Upload</h2>
-      <p>Upload class notes or syllabi for AI processing, enhancing the student learning experience.</p>
-      <a href="/teacher_notes" class="btn blue">ENTER PORTAL →</a>
-    </div>
-    {% if current_user.is_authenticated and current_user.role == 'teacher' %}
-    <div class="card blue" style="border-color: #8e44ad; background: #faf0ff;">
-      <div class="icon blue" style="background: #8e44ad;">📊</div>
-      <h2>Teacher's Dashboard</h2>
-      <p>View class-wide engagement analytics, conceptual mastery, and mistake patterns.</p>
-      <a href="/teacher_dashboard" class="btn blue" style="background: #8e44ad;">ENTER DASHBOARD →</a>
-    </div>
-    {% endif %}
-  </div>
-</body>
+  </section>
 
+  <section class="features">
+    <div class="features-container">
+      <h2 class="section-title">Everything You Need to Succeed</h2>
+      <div class="grid">
+        <div class="feature-card">
+          <div class="feature-icon">❓</div>
+          <h3>AI Doubt Resolution</h3>
+          <p>Students can ask questions anytime. Our RAG-powered assistant uses teacher notes to provide accurate, syllabus-aligned answers instantly.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📄</div>
+          <h3>Automated Grading</h3>
+          <p>Submit assignments and receive instant AI-driven evaluation against teacher-defined rubrics, including plagiarism detection.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📊</div>
+          <h3>Advanced Analytics</h3>
+          <p>Teachers get a bird's-eye view of class engagement, concept mastery, and common misconceptions through our intuitive dashboard.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2026 Teacher AI Assistant. All rights reserved.</p>
+  </footer>
+
+</body>
 </html>
