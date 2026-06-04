@@ -1,0 +1,27 @@
+# Environment variables
+.env
+
+# SQLite database
+app.db
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+venv/
+env/
+
+# FAISS vector database files
+faiss_index.bin
+metadata.json
+
+# Uploads folder (keep folder, ignore contents)
+uploads/*
+!uploads/.gitkeep
+
+# OS files
+.DS_Store
+Thumbs.db

@@ -1,0 +1,10 @@
+flask
+werkzeug
+pypdf
+sentence-transformers
+faiss-cpu
+numpy
+google-genai
+python-dotenv
+SQLAlchemy>=2.0
+Flask-Login>=0.6.3

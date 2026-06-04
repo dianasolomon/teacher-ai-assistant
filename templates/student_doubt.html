@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Student Doubt Portal</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0faf0;
+      min-height: 100vh;
+    }
+
+    /* ── Navbar ── */
+    nav {
+      background: #27ae60;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 32px;
+    }
+    nav .brand {
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      border: 1.5px solid #fff;
+      border-radius: 6px;
+      padding: 6px 18px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      transition: background 0.2s;
+    }
+    nav a:hover { background: rgba(255,255,255,0.15); }
+
+    /* ── Main ── */
+    main {
+      max-width: 820px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin-bottom: 24px;
+    }
+
+    /* ── Card ── */
+    .card {
+      background: #fff;
+      border-radius: 14px;
+      padding: 32px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+    }
+
+    label {
+      display: block;
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: #333;
+      margin-bottom: 8px;
+    }
+
+    /* ── Fields ── */
+    .row-fields {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .row-fields .field { flex: 1; }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid #ddd;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border 0.2s;
+    }
+    input[type="text"]:focus { border-color: #27ae60; }
+
+    textarea {
+      width: 100%;
+      padding: 14px;
+      border: 1.5px solid #ddd;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      resize: vertical;
+      min-height: 130px;
+      outline: none;
+      transition: border 0.2s;
+      font-family: inherit;
+    }
+    textarea:focus { border-color: #27ae60; }
+
+    /* ── Submit Button ── */
+    .btn-submit {
+      margin-top: 18px;
+      background: #27ae60;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 28px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-submit:hover { background: #219a55; }
+    .btn-submit:disabled { background: #a5d6b7; cursor: not-allowed; }
+
+    /* ── Status banners ── */
+    .banner {
+      margin-top: 22px;
+      border-radius: 10px;
+      padding: 14px 18px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      display: none;
+    }
+    .banner.processing {
+      background: #00bcd4;
+      color: #fff;
+    }
+    .banner.error {
+      background: #e74c3c;
+      color: #fff;
+    }
+
+    /* ── Answer box ── */
+    .answer-box {
+      margin-top: 22px;
+      background: #f8fff9;
+      border: 1.5px solid #b2dfdb;
+      border-radius: 12px;
+      padding: 22px 24px;
+      display: none;
+    }
+    .answer-box .answer-label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #27ae60;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      margin-bottom: 10px;
+    }
+    .answer-box .answer-text {
+      font-size: 1rem;
+      color: #1a1a1a;
+      line-height: 1.65;
+    }
+    .answer-box .concept-tags {
+      margin-top: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .concept-tag {
+      background: #e8f5e9;
+      color: #2e7d32;
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 0.78rem;
+      font-weight: 600;
+    }
+
+    /* ── Feedback buttons ── */
+    .feedback-row {
+      margin-top: 20px;
+      display: none;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .feedback-row p {
+      width: 100%;
+      font-size: 0.9rem;
+      color: #555;
+      font-weight: 500;
+    }
+    .btn-feedback {
+      flex: 1;
+      min-width: 180px;
+      padding: 13px 10px;
+      border: none;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.15s, opacity 0.2s;
+    }
+    .btn-feedback:hover { transform: translateY(-2px); }
+    .btn-feedback:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    .btn-understood {
+      background: #27ae60;
+      color: #fff;
+    }
+    .btn-confused {
+      background: #f39c12;
+      color: #fff;
+    }
+
+    /* ── Feedback confirmation ── */
+    .feedback-confirm {
+      margin-top: 16px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      display: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+    }
+    .feedback-confirm.understood {
+      background: #e8f5e9;
+      color: #2e7d32;
+    }
+    .feedback-confirm.confused {
+      background: #fff3e0;
+      color: #e65100;
+    }
+
+    /* ── Mastery Flash ── */
+    .mastery-flash {
+      margin-top: 12px;
+      background: #fff;
+      border: 1.5px solid #b2dfdb;
+      border-radius: 10px;
+      padding: 14px 18px;
+      display: none;
+    }
+    .mastery-flash-title {
+      font-size: 0.75rem; font-weight: 700; color: #555;
+      text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;
+    }
+    .mastery-bar-row { display: flex; flex-direction: column; gap: 7px; }
+    .mastery-bar-item { display: flex; flex-direction: column; gap: 3px; }
+    .mastery-bar-label-row { display: flex; justify-content: space-between; font-size: 0.78rem; }
+    .mastery-bar-label { color: #333; font-weight: 500; }
+    .mastery-bar-pct { font-weight: 700; }
+    .mastery-bar-track { height: 7px; background: #e8f5e9; border-radius: 4px; overflow: hidden; }
+    .mastery-bar-fill { height: 100%; border-radius: 4px; transition: width 0.7s cubic-bezier(.4,0,.2,1); }
+
+    /* ── Session Summary Panel ── */
+    .session-panel {
+      margin-top: 28px; background: #fff;
+      border: 1.5px solid #c8e6c9; border-radius: 14px;
+      padding: 22px 24px; display: none;
+    }
+    .session-panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+    .session-panel-title { font-size: 0.85rem; font-weight: 700; color: #27ae60; text-transform: uppercase; letter-spacing: 0.6px; }
+    .session-count-badge { background: #e8f5e9; color: #2e7d32; font-size: 0.75rem; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
+    .session-entry { display: flex; gap: 10px; align-items: flex-start; padding: 8px 0; border-bottom: 1px solid #f0f0f0; font-size: 0.82rem; }
+    .session-entry:last-child { border-bottom: none; }
+    .session-outcome-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+    .dot-understood { background: #27ae60; }
+    .dot-confused { background: #f39c12; }
+    .dot-pending { background: #90a4ae; }
+    .session-q { color: #333; flex: 1; line-height: 1.4; }
+    .session-concepts { color: #888; font-size: 0.72rem; margin-top: 2px; }
+    .view-dashboard-link {
+      display: inline-block; margin-top: 14px; font-size: 0.82rem; font-weight: 700;
+      color: #2980b9; text-decoration: none; padding: 7px 16px;
+      border: 1.5px solid #2980b9; border-radius: 8px; transition: background 0.2s, color 0.2s;
+    }
+    .view-dashboard-link:hover { background: #2980b9; color: #fff; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <span class="brand">Student Doubt Portal</span>
+  <div style="display:flex;gap:10px;">
+    <a href="/student_dashboard">📊 My Dashboard</a>
+    <a href="/">Home</a>
+  </div>
+</nav>
+
+<main>
+  <h1>Ask Your Doubt</h1>
+
+  <div class="card">
+
+    <!-- Student ID + Subject (auto-filled from login) -->
+    <div class="row-fields">
+      <div class="field">
+        <label for="studentId">Student ID</label>
+        <input type="text" id="studentId" value="{{ current_user.id }}" readonly style="background:#f5f5f5;cursor:not-allowed;color:#888;" />
+      </div>
+      <div class="field">
+        <label for="subject">Subject</label>
+        <input type="text" id="subject" placeholder="e.g. Math, PM, Science" value="{{ current_user.subject or 'general' }}" />
+      </div>
+    </div>
+
+    <!-- Question -->
+    <label for="question">Your Question</label>
+    <textarea id="question" placeholder="Type your doubt clearly..."></textarea>
+
+    <button class="btn-submit" id="submitBtn" onclick="submitDoubt()">SUBMIT DOUBT</button>
+
+    <!-- Processing banner -->
+    <div class="banner processing" id="processingBanner">
+      ⏳ &nbsp;Uploading and processing...
+    </div>
+
+    <!-- Error banner -->
+    <div class="banner error" id="errorBanner"></div>
+
+    <!-- Answer -->
+    <div class="answer-box" id="answerBox">
+      <div class="answer-label">✅ Answer</div>
+      <div class="answer-text" id="answerText"></div>
+      <div class="concept-tags" id="conceptTags"></div>
+    </div>
+
+    <!-- Feedback buttons -->
+    <div class="feedback-row" id="feedbackRow">
+      <p>Did this answer help you?</p>
+      <button class="btn-feedback btn-understood" id="btnUnderstood" onclick="sendFeedback('understood')">
+        ✅ &nbsp;Understood
+      </button>
+      <button class="btn-feedback btn-confused" id="btnConfused" onclick="sendFeedback('confused')">
+        😕 &nbsp;Still Confused
+      </button>
+    </div>
+
+    <!-- Feedback confirmation -->
+    <div class="feedback-confirm" id="feedbackConfirm"></div>
+
+    <!-- Live Mastery Flash (shown after feedback) -->
+    <div class="mastery-flash" id="masteryFlash">
+      <div class="mastery-flash-title">📈 Updated Concept Mastery</div>
+      <div class="mastery-bar-row" id="masteryBars"></div>
+    </div>
+
+  </div>
+
+  <!-- Session Summary Panel -->
+  <div class="session-panel" id="sessionPanel">
+    <div class="session-panel-header">
+      <span class="session-panel-title">📋 Session Summary</span>
+      <span class="session-count-badge" id="sessionCount">0 questions</span>
+    </div>
+    <div id="sessionEntries"></div>
+    <a href="/student_dashboard" class="view-dashboard-link">📊 View Full Dashboard →</a>
+  </div>
+</main>
+
+<script>
+  // State stored in memory
+  let lastConceptIds = [];
+  let lastConceptLabels = [];
+  let lastStudentId = '';
+  let lastSubject = '';
+  let lastQuestion = '';
+
+  // Session tracking
+  const sessionLog = [];   // [{q, labels, outcome: 'pending'|'understood'|'confused'}]
+  let currentSessionIndex = -1;
+
+  async function submitDoubt() {
+    const question = document.getElementById('question').value.trim();
+    const studentId = document.getElementById('studentId').value.trim() || 'S1';
+    const subject = document.getElementById('subject').value.trim() || 'general';
+
+    if (!question) {
+      showError('Please type your question before submitting.');
+      return;
+    }
+
+    // Reset UI
+    hide('answerBox');
+    hide('feedbackRow');
+    hide('feedbackConfirm');
+    hide('errorBanner');
+    show('processingBanner', 'processing');
+    setDisabled('submitBtn', true);
+
+    try {
+      const res = await fetch('/ask', {
+        method: 'POST',
+        credentials: "include",
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question, student_id: studentId, subject })
+      });
+
+      const data = await res.json();
+      hide('processingBanner');
+
+      if (!res.ok || data.error) {
+        showError(data.error || 'Something went wrong. Please try again.');
+        return;
+      }
+
+      // Save state for feedback
+      lastConceptIds = data.concept_ids || [];
+      lastConceptLabels = (data.concept_labels || []).filter(l => l !== 'out_of_syllabus' && l !== 'general');
+      lastStudentId = studentId;
+      lastSubject = subject;
+      lastQuestion = question;
+
+      // Push to session log
+      currentSessionIndex = sessionLog.length;
+      sessionLog.push({ q: question, labels: lastConceptLabels, outcome: 'pending' });
+      renderSessionPanel();
+
+      // Show answer
+      document.getElementById('answerText').textContent = data.answer || 'No answer returned.';
+
+      // Show concept tags
+      const tagsEl = document.getElementById('conceptTags');
+      tagsEl.innerHTML = '';
+      lastConceptLabels.forEach(label => {
+        const tag = document.createElement('span');
+        tag.className = 'concept-tag';
+        tag.textContent = label;
+        tagsEl.appendChild(tag);
+      });
+
+      show('answerBox');
+      show('feedbackRow');
+      hide('masteryFlash');
+
+      // Re-enable feedback buttons
+      setDisabled('btnUnderstood', false);
+      setDisabled('btnConfused', false);
+      hide('feedbackConfirm');
+
+    } catch (err) {
+      hide('processingBanner');
+      showError('Connection error: ' + err.message);
+    } finally {
+      setDisabled('submitBtn', false);
+    }
+  }
+
+  async function sendFeedback(type) {
+    setDisabled('btnUnderstood', true);
+    setDisabled('btnConfused', true);
+
+    try {
+      const res = await fetch('/feedback', {
+        method: 'POST',
+        credentials: "include",
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          student_id: lastStudentId,
+          subject: lastSubject,
+          question_text: lastQuestion,
+          concept_ids: lastConceptIds,
+          feedback: type
+        })
+      });
+
+      const data = await res.json();
+      const confirmEl = document.getElementById('feedbackConfirm');
+
+      if (type === 'understood') {
+        confirmEl.textContent = '🎉 Great! Your mastery has been updated. Keep it up!';
+        confirmEl.className = 'feedback-confirm understood';
+      } else {
+        confirmEl.textContent = "📚 No worries! We'll simplify the explanation next time.";
+        confirmEl.className = 'feedback-confirm confused';
+      }
+      show('feedbackConfirm');
+
+      // Update session log outcome
+      if (currentSessionIndex >= 0) {
+        sessionLog[currentSessionIndex].outcome = type;
+        renderSessionPanel();
+      }
+
+      // Live mastery flash: fetch updated mastery for these concepts
+      if (lastConceptIds.length > 0) {
+        try {
+          const mRes = await fetch('/api/dashboard/concept_mastery?filter=all', {credentials: "include"});
+          const mData = await mRes.json();
+          const relevant = (mData.concepts || []).filter(c => lastConceptIds.includes(c.concept_id));
+          if (relevant.length > 0) {
+            renderMasteryFlash(relevant, type);
+          }
+        } catch (_) {}  // silently skip if API fails
+      }
+
+    } catch (err) {
+      const confirmEl = document.getElementById('feedbackConfirm');
+      confirmEl.textContent = 'Could not save feedback. Please try again.';
+      confirmEl.className = 'feedback-confirm confused';
+      show('feedbackConfirm');
+      setDisabled('btnUnderstood', false);
+      setDisabled('btnConfused', false);
+    }
+  }
+
+  function renderMasteryFlash(concepts, feedbackType) {
+    const barsEl = document.getElementById('masteryBars');
+    barsEl.innerHTML = '';
+    concepts.forEach(c => {
+      const pct = Math.round(c.mastery * 100);
+      let color, pctColor;
+      if (pct >= 70) { color = '#27ae60'; pctColor = '#27ae60'; }
+      else if (pct >= 40) { color = '#f39c12'; pctColor = '#e67e22'; }
+      else { color = '#e74c3c'; pctColor = '#e74c3c'; }
+
+      const div = document.createElement('div');
+      div.className = 'mastery-bar-item';
+      div.innerHTML = `
+        <div class="mastery-bar-label-row">
+          <span class="mastery-bar-label">${escHtml(c.label)}</span>
+          <span class="mastery-bar-pct" style="color:${pctColor}">${pct}%</span>
+        </div>
+        <div class="mastery-bar-track">
+          <div class="mastery-bar-fill" style="width:0%;background:${color}" data-target="${pct}"></div>
+        </div>`;
+      barsEl.appendChild(div);
+    });
+
+    const flashEl = document.getElementById('masteryFlash');
+    flashEl.style.display = 'block';
+
+    // Animate bars after a tiny delay so CSS transition fires
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        barsEl.querySelectorAll('.mastery-bar-fill').forEach(bar => {
+          bar.style.width = bar.dataset.target + '%';
+        });
+      });
+    });
+  }
+
+  function renderSessionPanel() {
+    const panel = document.getElementById('sessionPanel');
+    const entriesEl = document.getElementById('sessionEntries');
+    const countEl = document.getElementById('sessionCount');
+
+    panel.style.display = 'block';
+    countEl.textContent = sessionLog.length + (sessionLog.length === 1 ? ' question' : ' questions');
+
+    entriesEl.innerHTML = '';
+    sessionLog.forEach((entry, i) => {
+      const dotClass = entry.outcome === 'understood' ? 'dot-understood'
+                     : entry.outcome === 'confused'   ? 'dot-confused'
+                     : 'dot-pending';
+      const qShort = entry.q.length > 90 ? entry.q.slice(0, 90) + '…' : entry.q;
+      const labelsStr = entry.labels.length > 0 ? entry.labels.join(', ') : '';
+
+      const div = document.createElement('div');
+      div.className = 'session-entry';
+      div.innerHTML = `
+        <div class="session-outcome-dot ${dotClass}"></div>
+        <div>
+          <div class="session-q">${escHtml(qShort)}</div>
+          ${labelsStr ? `<div class="session-concepts">${escHtml(labelsStr)}</div>` : ''}
+        </div>`;
+      entriesEl.appendChild(div);
+    });
+  }
+
+  function escHtml(str) {
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // ── Helpers ──
+  function show(id, cls) {
+    const el = document.getElementById(id);
+    el.style.display = cls ? 'block' : (id === 'feedbackRow' ? 'flex' : 'block');
+  }
+  function hide(id) {
+    document.getElementById(id).style.display = 'none';
+  }
+  function setDisabled(id, val) {
+    document.getElementById(id).disabled = val;
+  }
+  function showError(msg) {
+    const el = document.getElementById('errorBanner');
+    el.textContent = '✖ ' + msg;
+    el.style.display = 'block';
+  }
+</script>
+
+</body>
+</html>
